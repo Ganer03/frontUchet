@@ -6,7 +6,7 @@ export default defineConfig({
   server: {
     proxy: {
       "/api/": {
-        target: "http://fktpm.k-lab.su",
+        target: "https://fktpm.k-lab.su",
         changeOrigin: true,
         secure: false,
         rewrite: (path) => path.replace(/^\/api/, '')
