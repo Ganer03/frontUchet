@@ -1,11 +1,11 @@
-import React, {useEffect, useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
     Modal,
     ModalContent,
     ModalHeader,
     ModalBody,
     ModalFooter,
-    Button, Input, Select, SelectItem,
+    Button, Input, Select, SelectItem, Selection,
 } from '@nextui-org/react';
 import {API, courseMap} from "../../constants.ts";
 import {GroupCreate} from "../../../generated";
@@ -13,21 +13,18 @@ import {GroupCreate} from "../../../generated";
 export const AddGroup= ({ isOpen, onClose}: {isOpen: boolean, onClose: ()=> void}) => {
 
     const [isFormValid, setIsFormValid] = useState(false);
-    const [groupData, setGroupData] = useState<GroupCreate>({groupNumber: '', courseNumber: 0});
+    const [groupData, setGroupData] = useState<GroupCreate>({groupNumber: '', courseNumber: 1});
 
     useEffect(() => {
         setIsFormValid(groupData.groupNumber !== '' && groupData.courseNumber !== 0);
     }, [groupData]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const { name, value } = e.target;
-        setGroupData({ ...groupData, [name]: value });
-        console.log(groupData);
+    const handleInputChange = (value: string) => {
+        setGroupData({ ...groupData, groupNumber: value });
     };
 
-    const handleSelectChange = (value: number | undefined) => {
-        setGroupData({ ...groupData, courseNumber: Number(value) });
-        console.log(groupData);
+    const handleSelectChange = (keys: Selection ) => {
+        setGroupData({ ...groupData, courseNumber: Number(Array.from(keys)[0]) });
     };
 
     const handleAddStudent = () => {
@@ -47,19 +44,22 @@ export const AddGroup= ({ isOpen, onClose}: {isOpen: boolean, onClose: ()=> void
             onClose={onClose}
         >
             <ModalContent>
-                <ModalHeader className="flex flex-col gap-1">Добавить студента</ModalHeader>
+                <ModalHeader className="flex flex-col gap-1">Добавить группу</ModalHeader>
                 <ModalBody>
                     <Input
                         placeholder="Группа"
                         name="groupNumber"
+                        onValueChange={handleInputChange}
                         value={groupData.groupNumber}
-                        onChange={handleInputChange}
                     />
                     <Select
                         items={courseMap}
                         label="Курс"
+                        selectionMode={"single"}
+                        disallowEmptySelection
                         placeholder="Выберите курс"
-                        onChange={(e) => handleSelectChange(Number(e.target.value))}
+                        selectedKeys={[groupData.courseNumber]}
+                        onSelectionChange={handleSelectChange}
                     >
                         {(item) => <SelectItem value={item.id} key={item.id}>{item.course}</SelectItem>}
                     </Select>
