@@ -1,6 +1,6 @@
 import {Configuration, GroupsApi, StudentsApi} from "../generated";
 
-const ApiConfig = new Configuration( {basePath: "/api"})
+const ApiConfig = new Configuration( {basePath: "http://fktpm.k-lab.su"})
 
 export const API = {
     studentAPI: new StudentsApi(ApiConfig),
