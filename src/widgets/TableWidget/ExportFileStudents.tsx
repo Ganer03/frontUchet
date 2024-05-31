@@ -1,9 +1,25 @@
-import { useState } from 'react';
+import {useEffect, useState} from 'react';
 import { Modal, ModalContent, ModalHeader, ModalBody, ModalFooter, Button } from '@nextui-org/react';
 import { API } from "../../constants.ts";
+import {Group} from "../../../generated";
 
-export const ExportFileStudents = ({ isOpen, onClose, text, groupId, status }: { isOpen: boolean, onClose: () => void, text: string, groupId: number | undefined, status: boolean | undefined }) => {
+export const ExportFileStudents = ({ isOpen, onClose, text, groupId, status }: { isOpen: boolean, onClose: () => void, text: string, groupId: number | undefined, status: boolean | undefined}) => {
     const [isDownloading, setIsDownloading] = useState(false);
+    const [isGroup, setGroup] = useState<Group| undefined>(undefined);
+
+    useEffect(() => {
+        if (!isOpen || groupId === undefined || groupId === 0)
+            return;
+        API.groupAPI.readGroupGroupsGroupIdGet(groupId).then(
+            ({ data }) => {
+                setGroup(data);
+            }
+        )
+    }, [isOpen]);
+
+    useEffect(() => {
+        setGroup(undefined);
+    }, [onClose]);
 
     const handleDownload = async () => {
         setIsDownloading(true);
@@ -13,7 +29,8 @@ export const ExportFileStudents = ({ isOpen, onClose, text, groupId, status }: {
                     take: 999999,
                     skip: 0,
                     name: undefined,
-                    groupId: groupId === 0 ? undefined: groupId,
+                    groupId: groupId === 0 || groupId === undefined ? undefined: groupId,
+                    // courseId: courseId === 0 ? undefined: courseId,
                     status: status,
                     order: undefined
             }, {responseType: 'blob'});
@@ -39,7 +56,7 @@ export const ExportFileStudents = ({ isOpen, onClose, text, groupId, status }: {
             <ModalContent>
                 <ModalHeader>Загрузить документ</ModalHeader>
                 <ModalBody>
-                    <p>{text}</p>
+                    <p>{text} {isGroup === undefined? '?': ' из группы '+isGroup.groupNumber+'?'}</p>
                 </ModalBody>
                 <ModalFooter>
                     <Button color="danger" variant="light" onPress={onClose}>

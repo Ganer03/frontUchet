@@ -232,6 +232,12 @@ export interface StudentFilter {
     'groupId'?: number | null;
     /**
      * 
+     * @type {number}
+     * @memberof StudentFilter
+     */
+    'courseNumber'?: number | null;
+    /**
+     * 
      * @type {boolean}
      * @memberof StudentFilter
      */

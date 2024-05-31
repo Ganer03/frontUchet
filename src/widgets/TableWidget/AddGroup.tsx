@@ -5,7 +5,7 @@ import {
     ModalHeader,
     ModalBody,
     ModalFooter,
-    Button, Input, Select, SelectItem, Selection,
+    Button, Input, Select, SelectItem, Selection, SelectSection,
 } from '@nextui-org/react';
 import {API, courseMap} from "../../constants.ts";
 import {GroupCreate} from "../../../generated";
@@ -53,16 +53,32 @@ export const AddGroup= ({ isOpen, onClose}: {isOpen: boolean, onClose: ()=> void
                         value={groupData.groupNumber}
                     />
                     <Select
-                        items={courseMap}
                         label="Курс"
-                        selectionMode={"single"}
-                        disallowEmptySelection
-                        placeholder="Выберите курс"
-                        selectedKeys={[groupData.courseNumber]}
+                        size={"sm"}
+                        className="w-full md:max-w-md"
                         onSelectionChange={handleSelectChange}
                     >
-                        {(item) => <SelectItem value={item.id} key={item.id}>{item.course}</SelectItem>}
+                        {Object.keys(courseMap).map(section => (
+                            <SelectSection key={section} title={section} showDivider>
+                                {courseMap[section].map(course => (
+                                    <SelectItem key={course.id} value={course.id}>
+                                        {course.course}
+                                    </SelectItem>
+                                ))}
+                            </SelectSection>
+                        ))}
                     </Select>
+                    {/*<Select*/}
+                    {/*    items={courseMap}*/}
+                    {/*    label="Курс"*/}
+                    {/*    selectionMode={"single"}*/}
+                    {/*    disallowEmptySelection*/}
+                    {/*    placeholder="Выберите курс"*/}
+                    {/*    selectedKeys={[groupData.courseNumber]}*/}
+                    {/*    onSelectionChange={handleSelectChange}*/}
+                    {/*>*/}
+                    {/*    {(item) => <SelectItem value={item.id} key={item.id}>{item.course}</SelectItem>}*/}
+                    {/*</Select>*/}
                 </ModalBody>
                 <ModalFooter>
                     <Button color="danger" variant="light" onPress={onClose}>

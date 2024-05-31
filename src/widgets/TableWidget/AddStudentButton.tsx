@@ -8,7 +8,6 @@ import {AddFileStudent} from "./AddFileStudent.tsx";
 import {AddStudent} from "./AddStudent.tsx";
 import {ExportFileStudents} from "./ExportFileStudents.tsx";
 import {useState} from "react";
-import {groupMap} from "../../constants.ts";
 import {AddGroup} from "./AddGroup.tsx";
 import {DeleteGroup} from "./DeleteGroup.tsx";
 import {DeleteIcon} from "../DeleteIcon.tsx";
@@ -66,7 +65,7 @@ export const AddStudentButton = ({onCloseModal, groupId,onCloseModalGroup}: {onC
                     <DropdownItem
                         onPress={() =>{
                             setStatus(false);
-                            setText(`Вы уверены, что хотите скачать файл со студентами, не сдавшими зачетки${groupId === 0? '?': ' из группы '+ groupMap.filter(itemMap => itemMap.id === groupId).map(itemMap => itemMap.groupNumber)[0]+'?'}`);
+                            setText(`Вы уверены, что хотите скачать файл со студентами, не сдавшими зачетки`);
                             onExportOpen();
                         }}
                         key="copy"
@@ -79,7 +78,7 @@ export const AddStudentButton = ({onCloseModal, groupId,onCloseModalGroup}: {onC
                     <DropdownItem
                         onPress={
                             () => {setStatus(undefined);
-                                setText(`Вы уверены, что хотите скачать файл со всеми студентами${groupId === 0? '?': ' из группы '+groupMap.filter(itemMap => itemMap.id === groupId).map(itemMap => itemMap.groupNumber)[0]+'?'}`);
+                                setText(`Вы уверены, что хотите скачать файл со всеми студентами`);
                             onExportOpen();}}
                         key="edit"
                         color={"primary"}

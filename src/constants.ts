@@ -17,24 +17,45 @@ export const columns = [
     { key: "actions", label: "ACTIONS", sort: 'asc' },
 ];
 
-export const courseMap = [
-    {
-        id: 1,
-        course: "1"
-    },
-    {
-        id: 2,
-        course: "2"
-    },
-    {
-        id: 3,
-        course: "3"
-    },
-    {
-        id: 4,
-        course: "4"
-    },
-]
+export interface CourseDTO {
+    [key: string]: Course[];
+}
+
+export interface Course {
+    id: number;
+    course: string;
+}
+
+export const courseMap: CourseDTO = {
+    'Bakalavriat':[
+        {
+            id: 1,
+            course: "1"
+        },
+        {
+            id: 2,
+            course: "2"
+        },
+        {
+            id: 3,
+            course: "3"
+        },
+        {
+            id: 4,
+            course: "4"
+        }
+    ],
+    'Magistratura':[
+        {
+            id: 5,
+            course: "1"
+        },
+        {
+            id: 6,
+            course: "2"
+        }
+    ]
+}
 
 export const groupMap = [
     {

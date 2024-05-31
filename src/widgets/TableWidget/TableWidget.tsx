@@ -11,7 +11,7 @@ import {
     getKeyValue,
     Select,
     SelectItem,
-    SortDescriptor, Tooltip, useDisclosure,
+    SortDescriptor, Tooltip, useDisclosure, SelectSection, Selection,
 } from "@nextui-org/react";
 import React, {useCallback, useEffect, useState} from "react";
 import { SearchIcon } from "../SearchIcon.tsx";
@@ -66,13 +66,20 @@ export const TableWidget = () => {
     const { isOpen, onOpen, onClose } = useDisclosure();
     const { isOpen: isEditOpen, onOpen: onEditOpen, onClose: onEditClose } = useDisclosure();
 
+    const handleSelectChange = (keys: Selection) => {
+        if (isNaN(Number(Array.from(keys)[0])))
+            setCourseId(0);
+        else
+            setCourseId(Number(Array.from(keys)[0]));
+    };
+
     const loadGroup = useCallback(()=>{
         API.groupAPI.getGroupsGroupsGet().then(
             ({data}) => {
-                selectGroup(data)
+                selectGroup(courseId === 0 ? data : data.filter(itemMap => itemMap.courseNumber === courseId));
             }
         )
-    },[])
+    },[courseId])
 
     const loadData = useCallback(()=> {
         API.studentAPI.getStudentsStudentsFilterPost({
@@ -81,12 +88,13 @@ export const TableWidget = () => {
                 name: searchQuery === '' ? undefined : searchQuery,
                 groupId: groupId === 0 ? undefined : groupId,
                 status: status,
+                courseNumber: courseId === 0? undefined: courseId,
                 order: {
                     by: sortOrder.column === undefined ? 'id' : sortOrder.column,
                     direction: sortOrder.direction === 'ascending' ? 'asc' : 'desc'
                 }
         }).then(({data}) => { setStudents(data.students); setPages(Math.ceil(data.count/ data.take)); setCountStudents(data.count);});
-    }, [limit, page, searchQuery, groupId, status, sortOrder]);
+    }, [limit, page, searchQuery, groupId, status, sortOrder, courseId]);
 
     useEffect(() => {
         loadData();
@@ -131,7 +139,8 @@ export const TableWidget = () => {
             <div className="flex flex-col gap-4">
                 <div className="flex flex-wrap md:flex-nowrap justify-between items-start h-full gap-3 items-end ">
                     <Select
-                        items={courseId === 0 ? groupMap : groupMap.filter(itemMap => itemMap.courseNumber === courseId)}
+                        // items={courseId === 0 || courseId === undefined ? groupMap : groupMap.filter(itemMap => itemMap.courseNumber === courseId)}
+                        items={groupMap}
                         label="Группы"
                         size={"sm"}
                         className="w-full md:max-w-md"
@@ -140,16 +149,22 @@ export const TableWidget = () => {
                         {(item) => <SelectItem value={item.id} key={item.id}>{item.groupNumber}</SelectItem>}
                     </Select>
                     <Select
-                        items={courseMap}
                         label="Курс"
                         size={"sm"}
                         className="w-full md:max-w-md"
-                        onChange={(e) => setCourseId(Number(e.target.value))}
+                        onSelectionChange={handleSelectChange}
                     >
-                        {(item) => <SelectItem value={item.id} key={item.id}>{item.course}</SelectItem>}
+                        {Object.keys(courseMap).map(section => (
+                            <SelectSection key={section} title={section} showDivider>
+                                {courseMap[section].map(course => (
+                                    <SelectItem key={course.id} value={course.id}>
+                                        {course.course}
+                                    </SelectItem>
+                                ))}
+                            </SelectSection>
+                        ))}
                     </Select>
                     <Select
-                        items={courseMap}
                         label="Статус"
                         size={"sm"}
                         className="w-full md:max-w-md"
