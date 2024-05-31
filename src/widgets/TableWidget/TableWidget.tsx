@@ -235,7 +235,7 @@ export const TableWidget = () => {
                                                 <MySwitch item={item}/>
                                         ) : (
                                             <span>
-                                                {column.key === 'groupNumber' || column.key === 'courseNumber' ?  (
+                                                {column.key === 'groupNumber' ?  (
                                                     <span>
                                                         {getKeyValue(item.group, column.key)}
                                                         {/*{groupMap.filter(itemMap => itemMap.id === item.groupId).map(itemMap => itemMap.groupNumber)[0]}*/}
@@ -262,7 +262,15 @@ export const TableWidget = () => {
                                                                 </span>
                                                             ):(
                                                                 <span>
+                                                                    {column.key === "courseNumber" ? (
+                                                                        <span>
+                                                                            {getKeyValue(item.group, column.key) === 5 || getKeyValue(item.group, column.key) === 6? (getKeyValue(item.group, column.key) === 6 ? 'M2': 'M1'): getKeyValue(item.group, column.key)}
+                                                                        </span>
+                                                                        ):(
+                                                                <span>
                                                                     {getKeyValue(item, column.key)}
+                                                                </span>
+                                                                        )}
                                                                 </span>
                                                             )}
                                                         </span>
